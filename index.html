@@ -163,20 +163,33 @@
   .about-photo{position:relative;}
   .about-photo .frame{
     aspect-ratio:4/5;border-radius:var(--radius);
-    background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 55%,var(--red-dark) 100%);
-    display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
-    box-shadow:var(--shadow);
+    position:relative;overflow:hidden;box-shadow:var(--shadow);
   }
-  .about-photo .frame::after{
+  .about-slide{
+    position:absolute;inset:0;opacity:0;transition:opacity .8s ease;
+    background-size:cover;background-position:center;
+  }
+  .about-slide.active{opacity:1;}
+  .about-slide::after{
     content:'';position:absolute;inset:0;
-    background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 10px, transparent 10px 20px);
+    background:linear-gradient(to top, rgba(10,8,6,.75) 0%, rgba(10,8,6,.05) 45%, transparent 70%);
   }
-  .about-photo .frame-label{position:relative;z-index:2;color:rgba(255,255,255,.75);font-family:'Barlow Condensed',sans-serif;text-align:center;padding:20px;}
-  .about-photo .frame-label .tag{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+  .about-slide .slide-label{
+    position:absolute;left:20px;bottom:20px;z-index:2;color:var(--white);
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;
+    letter-spacing:.5px;text-transform:uppercase;
+  }
+  .about-slide .slide-label span{display:block;font-size:12px;letter-spacing:2px;color:var(--gold);font-weight:600;margin-bottom:3px;}
+  .about-dots{position:absolute;left:0;right:0;bottom:20px;z-index:3;display:flex;justify-content:center;gap:8px;}
+  .about-dots button{
+    width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.4);
+    border:none;padding:0;cursor:pointer;transition:.2s;
+  }
+  .about-dots button.active{background:var(--gold);transform:scale(1.25);}
   .about-photo .badge-years{
     position:absolute;bottom:-22px;left:-22px;background:var(--red);color:var(--white);
     width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;box-shadow:var(--shadow);border:4px solid var(--cream);
+    align-items:center;justify-content:center;box-shadow:var(--shadow);border:4px solid var(--cream);z-index:4;
   }
   .about-photo .badge-years .n{font-family:'Anton',sans-serif;font-size:30px;line-height:1;}
   .about-photo .badge-years .t{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;}
@@ -566,10 +579,8 @@
 <section class="section" id="about">
   <div class="wrap about-grid">
     <div class="about-photo">
-      <div class="frame">
-        <div class="frame-label">
-          <div class="tag">Photo placeholder</div>
-        </div>
+      <div class="frame" id="aboutFrame">
+        <div class="about-dots" id="aboutDots"></div>
       </div>
       <div class="badge-years">
         <div class="n" style="font-size:19px;">FREE</div>
@@ -937,8 +948,63 @@ const loopBrands = [...brands, ...brands]; // duplica para loop infinito
 track.innerHTML = loopBrands.map(b => `<div class="marquee-item"><span class="dot"></span>${b}</div>`).join('');
 
 /* =========================================================
-   MENU MOBILE
+   SLIDESHOW DA SEÇÃO ABOUT
+   Usa a primeira foto de cada tema do portfolio, uma a uma.
+   Troca sozinho a cada 4s, e também dá pra clicar nas bolinhas.
 ========================================================= */
+(function(){
+  const slides = portfolioData
+    .filter(cat => cat.images && cat.images.length)
+    .map(cat => ({ src: cat.images[0], label: cat.title }));
+
+  if(!slides.length) return;
+
+  const frame = document.getElementById('aboutFrame');
+  const dotsEl = document.getElementById('aboutDots');
+  let current = 0;
+  let timer = null;
+
+  slides.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'about-slide' + (i === 0 ? ' active' : '');
+    div.style.backgroundImage = `url('${s.src}')`;
+    div.innerHTML = `<div class="slide-label"><span>Amanda Construction</span>${s.label}</div>`;
+    frame.insertBefore(div, dotsEl);
+  });
+
+  dotsEl.innerHTML = slides.map((_, i) =>
+    `<button aria-label="Slide ${i+1}" class="${i===0?'active':''}" onclick="aboutGoTo(${i})"></button>`
+  ).join('');
+
+  function render(){
+    [...frame.querySelectorAll('.about-slide')].forEach((el, i) => el.classList.toggle('active', i === current));
+    [...dotsEl.children].forEach((el, i) => el.classList.toggle('active', i === current));
+  }
+
+  function next(){
+    current = (current + 1) % slides.length;
+    render();
+  }
+
+  function startTimer(){
+    timer = setInterval(next, 4000);
+  }
+  function stopTimer(){
+    clearInterval(timer);
+  }
+
+  window.aboutGoTo = function(i){
+    current = i;
+    render();
+    stopTimer();
+    startTimer();
+  };
+
+  frame.addEventListener('mouseenter', stopTimer);
+  frame.addEventListener('mouseleave', startTimer);
+
+  startTimer();
+})();
 function toggleMenu(){
   document.getElementById('navLinks').classList.toggle('open');
 }
