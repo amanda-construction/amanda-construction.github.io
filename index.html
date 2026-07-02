@@ -756,12 +756,14 @@ document.getElementById('year').textContent = new Date().getFullYear();
    O layout já é responsivo e funciona com qualquer proporção.
 ========================================================= */
 const portfolioData = [
-  { id:"block-wall",    icon:"i-wall",   title:"Block Wall",     sub:"Retaining & decorative walls", c1:"#1E3352", c2:"#0F1E33", images:[] },
-  { id:"walkway",       icon:"i-path",   title:"Walkway",        sub:"Bluestone & paver paths",       c1:"#7A1319", c2:"#4A0C10", images:[] },
-  { id:"stone-wall",    icon:"i-wall",   title:"Stone Wall",     sub:"Natural stone construction",     c1:"#3A3530", c2:"#211D1B", images:[] },
-  { id:"bluestone-patio", icon:"i-patio", title:"Bluestone Patio", sub:"Custom outdoor living",       c1:"#1E3352", c2:"#152238", images:[] },
-  { id:"main-entrance", icon:"i-stairs", title:"Main Entrance",  sub:"Steps & stone entryways",        c1:"#7A1319", c2:"#5A0E13", images:[] },
-  { id:"patio",         icon:"i-tile",   title:"Patio",           sub:"Herringbone & paver patios",     c1:"#3A3530", c2:"#1E1A17", images:[] },
+  { id:"block-wall",    icon:"i-wall",   title:"Block Wall",     sub:"Retaining & decorative walls", c1:"#1E3352", c2:"#0F1E33", images:["fotos/block-wall/block-wall-1.jpg","fotos/block-wall/block-wall-2.jpg","fotos/block-wall/block-wall-3.jpg","fotos/block-wall/block-wall-4.jpg"] },
+  { id:"walkway",       icon:"i-path",   title:"Walkway",        sub:"Bluestone & paver paths",       c1:"#7A1319", c2:"#4A0C10", images:["fotos/walkway/walkway-1.jpg","fotos/walkway/walkway-2.jpg","fotos/walkway/walkway-3.jpg","fotos/walkway/walkway-4.jpg","fotos/walkway/walkway-5.jpg"] },
+  { id:"stone-wall",    icon:"i-wall",   title:"Stone Wall",     sub:"Natural stone construction",     c1:"#3A3530", c2:"#211D1B", images:["fotos/stone-wall/stone-wall-1.jpg","fotos/stone-wall/stone-wall-2.jpg","fotos/stone-wall/stone-wall-3.jpg","fotos/stone-wall/stone-wall-4.jpg","fotos/stone-wall/stone-wall-5.jpg","fotos/stone-wall/stone-wall-6.jpg"] },
+  { id:"bluestone-patio", icon:"i-patio", title:"Bluestone Patio", sub:"Custom outdoor living",       c1:"#1E3352", c2:"#152238", images:["fotos/bluestone-patio/bluestone-patio-1.jpg","fotos/bluestone-patio/bluestone-patio-2.jpg"] },
+  { id:"main-entrance", icon:"i-stairs", title:"Main Entrance",  sub:"Steps & stone entryways",        c1:"#7A1319", c2:"#5A0E13", images:["fotos/main-entrance/main-entrance-1.jpg","fotos/main-entrance/main-entrance-2.jpg"] },
+  { id:"patio",         icon:"i-tile",   title:"Patio",           sub:"Herringbone & paver patios",     c1:"#3A3530", c2:"#1E1A17", images:["fotos/patio/patio-1.jpg","fotos/patio/patio-2.jpg","fotos/patio/patio-3.jpg","fotos/patio/patio-4.jpg"] },
+  { id:"landscape",     icon:"i-tree",   title:"Landscape",       sub:"Full outdoor renovations",       c1:"#1E3352", c2:"#0F1E33", images:["fotos/landscape/landscape-1.jpg"] },
+  { id:"granite-steps", icon:"i-stairs", title:"Granite Steps",   sub:"Custom stone entry steps",       c1:"#7A1319", c2:"#4A0C10", images:["fotos/granite-steps/granite-steps-1.jpg","fotos/granite-steps/granite-steps-2.jpg"] },
 ];
 
 function renderPortfolioGrid(){
