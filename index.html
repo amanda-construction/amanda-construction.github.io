@@ -187,7 +187,7 @@
   }
   .about-dots button.active{background:var(--gold);transform:scale(1.25);}
   .about-photo .badge-years{
-    position:absolute;bottom:-22px;left:-22px;background:var(--red);color:var(--white);
+    position:absolute;top:-22px;left:-22px;background:var(--red);color:var(--white);
     width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;
     align-items:center;justify-content:center;box-shadow:var(--shadow);border:4px solid var(--cream);z-index:4;
   }
@@ -290,6 +290,15 @@
   .field input::placeholder, .field textarea::placeholder{color:rgba(255,255,255,.4);}
   .field textarea{resize:vertical;min-height:90px;}
   .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .chk{
+    display:flex;align-items:center;gap:9px;font-family:'Barlow',sans-serif;
+    font-size:14.5px;color:rgba(255,255,255,.85);cursor:pointer;text-transform:none;
+    letter-spacing:0;padding:9px 10px;border-radius:4px;border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.04);transition:.15s;
+  }
+  .chk:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);}
+  .chk input{width:16px;height:16px;accent-color:var(--red);flex-shrink:0;cursor:pointer;}
   .contact-form .btn{width:100%;justify-content:center;margin-top:6px;}
   .form-note{font-size:12.5px;color:rgba(255,255,255,.45);margin-top:12px;font-family:'Barlow',sans-serif;text-transform:none;letter-spacing:0;text-align:center;}
 
@@ -418,6 +427,7 @@
     .about-list{grid-template-columns:1fr;}
     .carousel-viewport{aspect-ratio:1/1;}
     .field-row{grid-template-columns:1fr;}
+    .checkbox-grid{grid-template-columns:1fr;}
     .footer-grid{grid-template-columns:1fr;}
     .hero{padding:70px 0 90px;}
   }
@@ -688,15 +698,18 @@
         </div>
         <div class="field"><label>Email</label><input type="email" id="f_email" placeholder="you@email.com"></div>
         <div class="field">
-          <label>Project Type</label>
-          <select id="f_type">
-            <option>Stone / Block Wall</option>
-            <option>Walkway / Sidewalk</option>
-            <option>Patio</option>
-            <option>Driveway</option>
-            <option>Entrance / Steps</option>
-            <option>Other</option>
-          </select>
+          <label>Project Type <span style="text-transform:none;letter-spacing:0;opacity:.6;">(select all that apply)</span></label>
+          <div class="checkbox-grid">
+            <label class="chk"><input type="checkbox" name="f_type" value="Block Wall">Block Wall</label>
+            <label class="chk"><input type="checkbox" name="f_type" value="Walkway">Walkway</label>
+            <label class="chk"><input type="checkbox" name="f_type" value="Stone Wall">Stone Wall</label>
+            <label class="chk"><input type="checkbox" name="f_type" value="Bluestone Patio">Bluestone Patio</label>
+            <label class="chk"><input type="checkbox" name="f_type" value="Main Entrance">Main Entrance</label>
+            <label class="chk"><input type="checkbox" name="f_type" value="Patio">Patio</label>
+            <label class="chk"><input type="checkbox" name="f_type" value="Landscape">Landscape</label>
+            <label class="chk"><input type="checkbox" name="f_type" value="Granite Steps">Granite Steps</label>
+            <label class="chk"><input type="checkbox" name="f_type" value="Other">Other</label>
+          </div>
         </div>
         <div class="field"><label>Message</label><textarea id="f_msg" placeholder="Tell us about your project..."></textarea></div>
         <button type="submit" class="btn btn-primary">Send Request</button>
@@ -1023,7 +1036,8 @@ document.getElementById('quoteForm').addEventListener('submit', function(e){
   const name = document.getElementById('f_name').value;
   const phone = document.getElementById('f_phone').value;
   const email = document.getElementById('f_email').value;
-  const type = document.getElementById('f_type').value;
+  const checked = [...document.querySelectorAll('input[name="f_type"]:checked')].map(c => c.value);
+  const type = checked.length ? checked.join(', ') : 'Not specified';
   const msg = document.getElementById('f_msg').value;
 
   const subject = encodeURIComponent(`Free Estimate Request - ${type}`);
