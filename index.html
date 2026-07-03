@@ -388,7 +388,7 @@
     box-shadow:0 10px 26px rgba(0,0,0,.3);transition:transform .2s;
   }
   .wa-float:hover{transform:scale(1.08);}
-  .wa-float .icon{width:26px;height:26px;transform:translate(1px,-1px);}
+  .wa-float .icon{width:26px;height:26px;}
 
   /* ---------- ICON SYSTEM (sem emoji, sem libs externas) ---------- */
   .icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px;flex-shrink:0;}
@@ -419,7 +419,7 @@
     .topbar-right{display:none;}
     .topbar-left{gap:14px;font-size:12px;overflow:hidden;}
     .topbar .icon{width:13px;height:13px;}
-    .nav-links{position:fixed;top:78px;left:0;right:0;background:var(--cream);flex-direction:column;
+    .nav-links{position:absolute;top:100%;left:0;right:0;background:var(--cream);flex-direction:column;
       align-items:flex-start;gap:0;padding:10px 24px 20px;box-shadow:0 12px 20px rgba(0,0,0,.1);
       transform:translateY(-140%);transition:transform .25s ease;border-bottom:3px solid var(--red);}
     .nav-links.open{transform:translateY(0);}
@@ -814,7 +814,7 @@
 </div>
 
 <!-- ============ WHATSAPP FLOAT ============ -->
-<a class="wa-float" href="https://wa.me/17746156281" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
+<a class="wa-float" href="https://wa.me/17746156281" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="icon"><use href="#i-phone"/></svg></a>
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
