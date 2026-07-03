@@ -383,17 +383,10 @@
   /* ---------- WHATSAPP FLOAT ---------- */
   .wa-float{
     position:fixed;bottom:26px;right:26px;z-index:200;
-    width:60px;height:60px;background:#25D366;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;color:var(--white);
-    box-shadow:0 10px 26px rgba(0,0,0,.3);transition:transform .2s;
-  }
-  .wa-float::after{
-    content:'';position:absolute;
-    right:9px;bottom:-5px;width:16px;height:16px;background:#25D366;
-    clip-path:polygon(0 0, 100% 30%, 20% 100%);
+    width:64px;height:64px;transition:transform .2s;
   }
   .wa-float:hover{transform:scale(1.08);}
-  .wa-float .icon{width:26px;height:26px;}
+  .wa-float svg{width:100%;height:100%;filter:drop-shadow(0 10px 22px rgba(0,0,0,.35));}
 
   /* ---------- ICON SYSTEM (sem emoji, sem libs externas) ---------- */
   .icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px;flex-shrink:0;}
@@ -452,6 +445,13 @@
 <!-- ============ SPRITE DE ÍCONES (sem dependência externa) ============ -->
 <svg style="display:none">
   <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8Z"/></symbol>
+  <symbol id="i-whatsapp-badge" viewBox="0 0 64 64">
+    <circle cx="32" cy="29" r="27" fill="#25D366"/>
+    <path d="M19 51 L34 51 L14 65 Z" fill="#25D366"/>
+    <g fill="#ffffff" transform="translate(32,29) scale(1.35) translate(-12,-11)">
+      <path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8Z"/>
+    </g>
+  </symbol>
   <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 6.5l9 6.5 9-6.5"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.6"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 7v5.3l3.5 2"/></symbol>
@@ -819,7 +819,7 @@
 </div>
 
 <!-- ============ WHATSAPP FLOAT ============ -->
-<a class="wa-float" href="https://wa.me/17746156281" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="icon"><use href="#i-phone"/></svg></a>
+<a class="wa-float" href="https://wa.me/17746156281" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 64 64"><use href="#i-whatsapp-badge"/></svg></a>
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
