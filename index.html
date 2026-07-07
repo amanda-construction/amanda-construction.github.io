@@ -583,11 +583,11 @@
       <h1><em>Amanda Construction Inc.</em></h1>
       <p>From retaining walls to bluestone patios, Amanda Construction Inc. has been turning Central MA properties into lasting, beautiful hardscapes — one stone at a time. No job too small, every job done right.</p>
       <div class="hero-badge">
-        <div class="stars">
+        <div class="stars" id="heroReviewStars">
           <svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg>
         </div>
-        <p>"Amanda Construction was a great company to work with. They were very helpful with ideas and followed through with great looking front steps. It looks amazing!"</p>
-        <div class="who">Deb D. — via HomeAdvisor</div>
+        <p id="heroReviewText">"Amanda Construction was a great company to work with. They were very helpful with ideas and followed through with great looking front steps. It looks amazing!"</p>
+        <div class="who" id="heroReviewWho">Deb D. — via HomeAdvisor</div>
         <button type="button" class="see-all-link see-all-link--hero" onclick="openReviewsModal()">See all reviews &rarr;</button>
       </div>
       <div class="hero-actions">
@@ -1162,11 +1162,18 @@ async function loadLatestReview(){
       .get();
     if(!snap.empty){
       const r = snap.docs[0].data();
-      document.getElementById('reviewText').textContent = `"${r.text}"`;
-      document.getElementById('reviewWho').textContent = `${r.name} — via amandaconstruction.com`;
       const n = Math.max(1, Math.min(5, r.rating || 5));
-      document.getElementById('reviewStars').innerHTML =
-        '<svg class="icon"><use href="#i-star"/></svg>'.repeat(n);
+      const starsHtml = '<svg class="icon"><use href="#i-star"/></svg>'.repeat(n);
+      const textVal = `"${r.text}"`;
+      const whoVal = `${r.name} — via amandaconstruction.com`;
+
+      document.getElementById('reviewText').textContent = textVal;
+      document.getElementById('reviewWho').textContent = whoVal;
+      document.getElementById('reviewStars').innerHTML = starsHtml;
+
+      document.getElementById('heroReviewText').textContent = textVal;
+      document.getElementById('heroReviewWho').textContent = whoVal;
+      document.getElementById('heroReviewStars').innerHTML = starsHtml;
     }
   } catch(e){
     console.warn('Could not load latest review', e);
