@@ -93,7 +93,7 @@
   .hero{
     position:relative;
     background:
-      linear-gradient(115deg, var(--navy) 0%, var(--navy) 42%, var(--red-darker) 42%, var(--red) 100%);
+      linear-gradient(115deg, var(--navy) 0%, var(--navy) 42%, var(--red) 42%, var(--red) 100%);
     color:var(--white);
     padding:110px 0 130px;
     overflow:hidden;
@@ -105,7 +105,8 @@
       repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 2px, transparent 2px 46px);
     opacity:.5;pointer-events:none;
   }
-  .hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.2fr .8fr;gap:50px;align-items:center;}
+  .hero .wrap{position:relative;z-index:2;}
+  .hero-content{max-width:600px;}
   .hero-eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:4px;font-weight:700;font-size:14px;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:18px;}
   .hero-badge{
     background:rgba(255,255,255,.07);
@@ -115,7 +116,7 @@
   .hero-badge .stars{color:var(--gold);display:flex;gap:4px;margin-bottom:14px;}
   .hero-badge p{color:var(--white);font-size:15.5px;font-style:italic;margin-bottom:16px;}
   .hero-badge .who{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;}
-  @media(max-width:980px){.hero .wrap{grid-template-columns:1fr;} .hero-badge{max-width:480px;}}
+  .hero-badge{max-width:280px;margin:22px 0 28px;padding:20px 22px;}
   @media(max-width:760px){.hero-badge{display:none;}}
   .hero-eagle{
     position:absolute;top:0;left:0;width:100%;height:100%;
@@ -129,7 +130,7 @@
   }
   @media(max-width:980px){.hero-logo-mark{display:none;}}
   @media(max-width:760px){
-    .hero{background:linear-gradient(165deg, var(--navy) 0%, var(--navy) 34%, var(--red-darker) 34%, var(--red) 62%);}
+    .hero{background:linear-gradient(165deg, var(--navy) 0%, var(--navy) 34%, var(--red) 34%, var(--red) 62%);}
     .hero-eagle{
       display:block;clip-path:polygon(91% 17%, 100% 17%, 100% 100%, 0% 100%, 0% 40%);
       position:absolute;top:0;left:0;width:100%;height:100%;
@@ -270,12 +271,19 @@
   .review-links{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:48px;}
   .btn-outline-navy{border-color:var(--navy);color:var(--navy);}
   .btn-outline-navy:hover{background:var(--navy);color:var(--white);}
-  .review-form-wrap{max-width:520px;margin:0 auto;background:var(--cream-2);border-radius:var(--radius);padding:34px;}
-  .review-form-wrap h3{color:var(--navy);font-size:19px;margin-bottom:20px;text-align:center;}
-  .star-picker{display:flex;gap:4px;font-size:26px;line-height:1;color:#d8d2c4;}
+  .review-form-wrap{max-width:520px;margin:0 auto;background:var(--navy);border-radius:var(--radius);padding:34px;box-shadow:var(--shadow);}
+  .review-form-wrap h3{color:var(--white);font-size:19px;margin-bottom:20px;text-align:center;}
+  .review-form-wrap .field label{color:rgba(255,255,255,.92);}
+  .review-form-wrap .field input,
+  .review-form-wrap .field textarea{
+    background:rgba(255,255,255,.06);color:var(--white);border:1px solid rgba(255,255,255,.18);
+  }
+  .review-form-wrap .field input::placeholder,
+  .review-form-wrap .field textarea::placeholder{color:rgba(255,255,255,.4);}
+  .star-picker{display:flex;gap:4px;font-size:26px;line-height:1;color:rgba(255,255,255,.25);}
   .star-picker span{cursor:pointer;transition:color .15s;}
   .star-picker span.active{color:var(--gold);}
-  #reviewFormNote{color:#6b655c;}
+  #reviewFormNote{color:rgba(255,255,255,.55);}
 
   /* ---------- CTA BANNER ---------- */
   .cta-banner{
@@ -557,10 +565,17 @@
   <img class="hero-eagle" src="img/hero-eagle-bg.webp" alt="" aria-hidden="true">
   <img class="hero-logo-mark" src="img/hero-logo-mark.webp" alt="" aria-hidden="true">
   <div class="wrap">
-    <div>
+    <div class="hero-content">
       <div class="hero-eyebrow">CENTRAL MASSACHUSETTS MASONRY SPECIALISTS</div>
       <h1><em>Amanda Construction Inc.</em></h1>
       <p>From retaining walls to bluestone patios, Amanda Construction Inc. has been turning Central MA properties into lasting, beautiful hardscapes — one stone at a time. No job too small, every job done right.</p>
+      <div class="hero-badge">
+        <div class="stars">
+          <svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg>
+        </div>
+        <p>"Amanda Construction was a great company to work with. They were very helpful with ideas and followed through with great looking front steps. It looks amazing!"</p>
+        <div class="who">Deb D. — via HomeAdvisor</div>
+      </div>
       <div class="hero-actions">
         <a href="#contact" class="btn btn-primary">Get a Free Estimate</a>
         <a href="tel:+19786224900" class="btn btn-outline"><svg class="icon"><use href="#i-phone"/></svg>Call (978) 622-4900</a>
@@ -574,13 +589,6 @@
         <a href="https://www.instagram.com/amandaconstruction" target="_blank" rel="noopener" aria-label="Instagram"><svg class="icon"><use href="#i-instagram"/></svg></a>
         <a href="https://wa.me/17746156281" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
       </div>
-    </div>
-    <div class="hero-badge">
-      <div class="stars">
-        <svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg>
-      </div>
-      <p>"Amanda Construction was a great company to work with. They were very helpful with ideas and followed through with great looking front steps. It looks amazing!"</p>
-      <div class="who">Deb D. — via HomeAdvisor</div>
     </div>
   </div>
 </section>
@@ -1060,10 +1068,16 @@ document.getElementById('quoteForm').addEventListener('submit', function(e){
    2) Ativa o "Firestore Database" (modo produção, região us-east ou
       a mais próxima)
    3) Em "Configurações do projeto" > "Seus apps" > "Web", pega a
-      config e cola no objeto firebaseConfig logo abaixo
-   4) Em Firestore > Regras, cola isso (permite qualquer um enviar
-      review, mas só review com status "approved" aparece publicamente,
-      e ninguém de fora consegue editar/apagar review de outra pessoa):
+      config e cola no objeto firebaseConfig logo abaixo — E TAMBÉM
+      no admin.html (é a mesma config nos dois arquivos)
+   4) Ativa "Authentication" > método "Email/Password", e cria UM
+      usuário pra sua cliente (o e-mail dela + uma senha) — é com
+      esse login que ela vai aprovar reviews pelo admin.html, sem
+      nunca precisar abrir o Firebase de verdade
+   5) Em Firestore > Regras, cola isso (qualquer um pode ENVIAR
+      review; só review "approved" aparece pro público; só quem tá
+      logado — ou seja, sua cliente pelo admin.html — pode aprovar
+      ou apagar):
 
       rules_version = '2';
       service cloud.firestore {
@@ -1075,16 +1089,15 @@ document.getElementById('quoteForm').addEventListener('submit', function(e){
                           && request.resource.data.text.size() < 500
                           && request.resource.data.name is string
                           && request.resource.data.name.size() < 80;
-            allow update, delete: if false;
+            allow update, delete: if request.auth != null;
           }
         }
       }
 
-   5) Toda review nova chega com status "pending" (não aparece ainda).
-      Pra publicar: abre o Firebase Console > Firestore Database >
-      coleção "reviews" > abre o documento > troca o campo "status"
-      de "pending" pra "approved" > salva. Na próxima vez que alguém
-      abrir o site, essa vira a review em destaque.
+   6) Toda review nova chega com status "pending" (não aparece ainda).
+      Pra publicar: sua cliente entra em amandaconstruction.com/admin.html,
+      loga com o e-mail/senha criados no passo 4, e clica em "Approve"
+      na review que quiser. Ela nunca precisa abrir o Firebase Console.
    Sem essa config preenchida, o site simplesmente mostra a review
    fixa (Deb D.) e o formulário avisa que ainda não está conectado.
 ========================================================= */
