@@ -268,6 +268,19 @@
   .review-card .stars{color:var(--gold);display:flex;justify-content:center;gap:5px;margin-bottom:16px;}
   .review-card p{color:var(--white);font-size:17px;font-style:italic;margin-bottom:14px;line-height:1.5;}
   .review-card .who{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13.5px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;}
+  .see-all-link{
+    display:block;margin:16px auto 0;background:none;border:none;color:var(--gold);
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13.5px;letter-spacing:.5px;
+    text-transform:uppercase;cursor:pointer;text-decoration:underline;
+  }
+  .see-all-link--hero{margin-top:12px;font-size:12.5px;}
+  .reviews-modal-list{padding:26px 30px;}
+  .reviews-modal-item{padding:20px 0;border-bottom:1px solid rgba(0,0,0,.08);}
+  .reviews-modal-item:last-child{border-bottom:none;}
+  .reviews-modal-item .stars{color:var(--gold);display:flex;gap:3px;margin-bottom:8px;font-size:14px;}
+  .reviews-modal-item .rname{font-weight:700;color:var(--navy);font-family:'Barlow Condensed',sans-serif;font-size:14.5px;letter-spacing:.3px;}
+  .reviews-modal-item .rtext{color:#3a3530;font-size:15px;margin:6px 0;line-height:1.5;}
+  .reviews-modal-item .rdate{color:#9c9384;font-size:12px;}
   .review-links{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:48px;}
   .btn-outline-navy{border-color:var(--navy);color:var(--navy);}
   .btn-outline-navy:hover{background:var(--navy);color:var(--white);}
@@ -575,6 +588,7 @@
         </div>
         <p>"Amanda Construction was a great company to work with. They were very helpful with ideas and followed through with great looking front steps. It looks amazing!"</p>
         <div class="who">Deb D. — via HomeAdvisor</div>
+        <button type="button" class="see-all-link see-all-link--hero" onclick="openReviewsModal()">See all reviews &rarr;</button>
       </div>
       <div class="hero-actions">
         <a href="#contact" class="btn btn-primary">Get a Free Estimate</a>
@@ -649,6 +663,7 @@
       </div>
       <p id="reviewText">"Amanda Construction was a great company to work with. They were very helpful with ideas and followed through with great looking front steps. It looks amazing!"</p>
       <div class="who" id="reviewWho">Deb D. — via HomeAdvisor</div>
+      <button type="button" id="seeAllReviewsBtn" class="see-all-link">See all reviews &rarr;</button>
     </div>
 
     <div class="review-links">
@@ -782,6 +797,23 @@
   </div>
   <div class="footer-bottom">© <span id="year"></span> Amanda Construction Inc. All rights reserved. &nbsp;·&nbsp; <a href="terms.html" style="color:rgba(255,255,255,.6);text-decoration:underline;">Terms of Use and Service</a></div>
 </footer>
+
+
+<!-- ============ ALL REVIEWS MODAL ============ -->
+<div class="modal-overlay" id="reviewsModalOverlay">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-head">
+      <div>
+        <span>AMANDA CONSTRUCTION INC.</span>
+        <h3>All Reviews</h3>
+      </div>
+      <button class="modal-close" onclick="closeReviewsModal()"><svg class="icon"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="reviews-modal-list" id="reviewsModalList">
+      <p style="color:#7a746a;font-style:italic;">Loading…</p>
+    </div>
+  </div>
+</div>
 
 <!-- ============ MODAL ============ -->
 <div class="modal-overlay" id="modalOverlay">
@@ -922,7 +954,7 @@ document.getElementById('modalOverlay').addEventListener('click', (e) => {
 });
 document.addEventListener('keydown', (e) => {
   if(!document.getElementById('modalOverlay').classList.contains('active')) return;
-  if(e.key === 'Escape') closeModal();
+  if(e.key === 'Escape'){ closeModal(); closeReviewsModal(); }
   if(e.key === 'ArrowRight') nextSlide();
   if(e.key === 'ArrowLeft') prevSlide();
 });
@@ -1141,6 +1173,61 @@ async function loadLatestReview(){
   }
 }
 loadLatestReview();
+
+function escapeHtmlReview(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+async function openReviewsModal(){
+  const overlay = document.getElementById('reviewsModalOverlay');
+  const listEl = document.getElementById('reviewsModalList');
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  if(!reviewsDb){
+    listEl.innerHTML = '<p style="color:#7a746a;font-style:italic;">Reviews aren\'t connected yet — check back soon, or leave yours below!</p>';
+    return;
+  }
+  listEl.innerHTML = '<p style="color:#7a746a;font-style:italic;">Loading…</p>';
+  try {
+    const snap = await reviewsDb.collection('reviews')
+      .where('status','==','approved')
+      .orderBy('createdAt','desc')
+      .get();
+    if(snap.empty){
+      listEl.innerHTML = '<p style="color:#7a746a;font-style:italic;">No reviews yet — be the first to leave one below!</p>';
+      return;
+    }
+    listEl.innerHTML = snap.docs.map(doc => {
+      const r = doc.data();
+      const n = Math.max(1, Math.min(5, r.rating || 5));
+      const stars = '<svg class="icon"><use href="#i-star"/></svg>'.repeat(n);
+      const date = r.createdAt ? r.createdAt.toDate().toLocaleDateString() : '';
+      return `
+        <div class="reviews-modal-item">
+          <div class="stars">${stars}</div>
+          <div class="rname">${escapeHtmlReview(r.name || 'Anonymous')}</div>
+          <div class="rtext">"${escapeHtmlReview(r.text || '')}"</div>
+          <div class="rdate">${date}</div>
+        </div>`;
+    }).join('');
+  } catch(e){
+    listEl.innerHTML = '<p style="color:#7a746a;font-style:italic;">Could not load reviews right now.</p>';
+    console.warn(e);
+  }
+}
+
+function closeReviewsModal(){
+  document.getElementById('reviewsModalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('seeAllReviewsBtn').addEventListener('click', openReviewsModal);
+document.getElementById('reviewsModalOverlay').addEventListener('click', (e) => {
+  if(e.target.id === 'reviewsModalOverlay') closeReviewsModal();
+});
 
 let selectedRating = 5;
 const starPicker = document.getElementById('starPicker');
