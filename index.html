@@ -274,13 +274,21 @@
     text-transform:uppercase;cursor:pointer;text-decoration:underline;
   }
   .see-all-link--hero{margin-top:12px;font-size:12.5px;}
-  .reviews-modal-list{padding:26px 30px;}
-  .reviews-modal-item{padding:20px 0;border-bottom:1px solid rgba(0,0,0,.08);}
-  .reviews-modal-item:last-child{border-bottom:none;}
-  .reviews-modal-item .stars{color:var(--gold);display:flex;gap:3px;margin-bottom:8px;font-size:14px;}
-  .reviews-modal-item .rname{font-weight:700;color:var(--navy);font-family:'Barlow Condensed',sans-serif;font-size:14.5px;letter-spacing:.3px;}
-  .reviews-modal-item .rtext{color:#3a3530;font-size:15px;margin:6px 0;line-height:1.5;}
-  .reviews-modal-item .rdate{color:#9c9384;font-size:12px;}
+  .reviews-carousel-viewport{
+    position:relative;width:100%;min-height:300px;overflow:hidden;
+    background:var(--navy);touch-action:pan-y;user-select:none;
+  }
+  .reviews-carousel-track{display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1);}
+  .review-slide{
+    flex:0 0 100%;min-height:300px;box-sizing:border-box;
+    padding:50px 66px;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;
+  }
+  .review-slide .stars{color:var(--gold);display:flex;gap:4px;margin-bottom:16px;}
+  .review-slide .rtext{color:var(--white);font-size:17px;font-style:italic;line-height:1.6;margin-bottom:18px;}
+  .review-slide .rname{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gold);font-size:14px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
+  .review-slide .rdate{color:rgba(255,255,255,.4);font-size:12.5px;}
+  @media(max-width:600px){.review-slide{padding:44px 46px;}}
   .review-links{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:48px;}
   .btn-outline-navy{border-color:var(--navy);color:var(--navy);}
   .btn-outline-navy:hover{background:var(--navy);color:var(--white);}
@@ -809,8 +817,13 @@
       </div>
       <button class="modal-close" onclick="closeReviewsModal()"><svg class="icon"><use href="#i-close"/></svg></button>
     </div>
-    <div class="reviews-modal-list" id="reviewsModalList">
-      <p style="color:#7a746a;font-style:italic;">Loading…</p>
+    <div class="reviews-carousel-viewport" id="reviewsCarouselViewport">
+      <div class="reviews-carousel-track" id="reviewsCarouselTrack">
+        <div class="review-slide"><p style="color:rgba(255,255,255,.6);font-style:italic;">Loading…</p></div>
+      </div>
+      <button class="carousel-nav prev" onclick="prevReviewSlide()" aria-label="Previous review"><svg class="icon"><use href="#i-chevron"/></svg></button>
+      <button class="carousel-nav next" onclick="nextReviewSlide()" aria-label="Next review"><svg class="icon"><use href="#i-chevron"/></svg></button>
+      <div class="carousel-counter" id="reviewsCarouselCounter">1 / 1</div>
     </div>
   </div>
 </div>
@@ -953,10 +966,12 @@ document.getElementById('modalOverlay').addEventListener('click', (e) => {
   if(e.target.id === 'modalOverlay') closeModal();
 });
 document.addEventListener('keydown', (e) => {
-  if(!document.getElementById('modalOverlay').classList.contains('active')) return;
+  const photoActive = document.getElementById('modalOverlay').classList.contains('active');
+  const reviewActive = document.getElementById('reviewsModalOverlay').classList.contains('active');
+  if(!photoActive && !reviewActive) return;
   if(e.key === 'Escape'){ closeModal(); closeReviewsModal(); }
-  if(e.key === 'ArrowRight') nextSlide();
-  if(e.key === 'ArrowLeft') prevSlide();
+  if(e.key === 'ArrowRight'){ if(photoActive) nextSlide(); if(reviewActive) nextReviewSlide(); }
+  if(e.key === 'ArrowLeft'){ if(photoActive) prevSlide(); if(reviewActive) prevReviewSlide(); }
 });
 
 /* Swipe no celular */
@@ -979,6 +994,30 @@ document.addEventListener('keydown', (e) => {
     dragging = false;
     if(deltaX > 50) prevSlide();
     else if(deltaX < -50) nextSlide();
+    deltaX = 0;
+  });
+})();
+
+/* Swipe no celular — carrossel de reviews */
+(function(){
+  const viewport = document.getElementById('reviewsCarouselViewport');
+  let startX = 0, deltaX = 0, dragging = false;
+
+  viewport.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    dragging = true;
+  }, {passive:true});
+
+  viewport.addEventListener('touchmove', (e) => {
+    if(!dragging) return;
+    deltaX = e.touches[0].clientX - startX;
+  }, {passive:true});
+
+  viewport.addEventListener('touchend', () => {
+    if(!dragging) return;
+    dragging = false;
+    if(deltaX > 50) prevReviewSlide();
+    else if(deltaX < -50) nextReviewSlide();
     deltaX = 0;
   });
 })();
@@ -1187,43 +1226,73 @@ function escapeHtmlReview(str){
   return d.innerHTML;
 }
 
+let reviewSlideIndex = 0;
+let reviewSlideCount = 0;
+
 async function openReviewsModal(){
   const overlay = document.getElementById('reviewsModalOverlay');
-  const listEl = document.getElementById('reviewsModalList');
+  const trackEl = document.getElementById('reviewsCarouselTrack');
+  const counterEl = document.getElementById('reviewsCarouselCounter');
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
+  reviewSlideIndex = 0;
 
   if(!reviewsDb){
-    listEl.innerHTML = '<p style="color:#7a746a;font-style:italic;">Reviews aren\'t connected yet — check back soon, or leave yours below!</p>';
+    trackEl.innerHTML = '<div class="review-slide"><p style="color:rgba(255,255,255,.6);font-style:italic;">Reviews aren\'t connected yet — check back soon, or leave yours below!</p></div>';
+    reviewSlideCount = 1;
+    counterEl.textContent = '1 / 1';
     return;
   }
-  listEl.innerHTML = '<p style="color:#7a746a;font-style:italic;">Loading…</p>';
+  trackEl.innerHTML = '<div class="review-slide"><p style="color:rgba(255,255,255,.6);font-style:italic;">Loading…</p></div>';
   try {
     const snap = await reviewsDb.collection('reviews')
       .where('status','==','approved')
       .orderBy('createdAt','desc')
       .get();
     if(snap.empty){
-      listEl.innerHTML = '<p style="color:#7a746a;font-style:italic;">No reviews yet — be the first to leave one below!</p>';
+      trackEl.innerHTML = '<div class="review-slide"><p style="color:rgba(255,255,255,.6);font-style:italic;">No reviews yet — be the first to leave one below!</p></div>';
+      reviewSlideCount = 1;
+      counterEl.textContent = '1 / 1';
       return;
     }
-    listEl.innerHTML = snap.docs.map(doc => {
+    reviewSlideCount = snap.size;
+    trackEl.innerHTML = snap.docs.map(doc => {
       const r = doc.data();
       const n = Math.max(1, Math.min(5, r.rating || 5));
       const stars = '<svg class="icon"><use href="#i-star"/></svg>'.repeat(n);
       const date = r.createdAt ? r.createdAt.toDate().toLocaleDateString() : '';
       return `
-        <div class="reviews-modal-item">
+        <div class="review-slide">
           <div class="stars">${stars}</div>
-          <div class="rname">${escapeHtmlReview(r.name || 'Anonymous')}</div>
           <div class="rtext">"${escapeHtmlReview(r.text || '')}"</div>
+          <div class="rname">${escapeHtmlReview(r.name || 'Anonymous')}</div>
           <div class="rdate">${date}</div>
         </div>`;
     }).join('');
+    updateReviewCarousel();
   } catch(e){
-    listEl.innerHTML = '<p style="color:#7a746a;font-style:italic;">Could not load reviews right now.</p>';
+    trackEl.innerHTML = '<div class="review-slide"><p style="color:rgba(255,255,255,.6);font-style:italic;">Could not load reviews right now.</p></div>';
+    reviewSlideCount = 1;
+    counterEl.textContent = '1 / 1';
     console.warn(e);
   }
+}
+
+function updateReviewCarousel(){
+  const trackEl = document.getElementById('reviewsCarouselTrack');
+  const counterEl = document.getElementById('reviewsCarouselCounter');
+  trackEl.style.transform = `translateX(-${reviewSlideIndex * 100}%)`;
+  counterEl.textContent = `${reviewSlideIndex + 1} / ${reviewSlideCount}`;
+}
+function nextReviewSlide(){
+  if(reviewSlideCount < 2) return;
+  reviewSlideIndex = (reviewSlideIndex + 1) % reviewSlideCount;
+  updateReviewCarousel();
+}
+function prevReviewSlide(){
+  if(reviewSlideCount < 2) return;
+  reviewSlideIndex = (reviewSlideIndex - 1 + reviewSlideCount) % reviewSlideCount;
+  updateReviewCarousel();
 }
 
 function closeReviewsModal(){
