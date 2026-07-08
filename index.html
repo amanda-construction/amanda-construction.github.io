@@ -76,9 +76,11 @@
     box-shadow:0 2px 14px rgba(0,0,0,.06);
   }
   .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:78px;}
-  .brand{display:flex;align-items:center;gap:12px;}
-  .brand-logo-img{height:42px;width:auto;}
-  .brand-logo-img--footer{height:46px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-icon-img{height:48px;width:auto;flex-shrink:0;}
+  .brand-text-img{height:34px;width:auto;}
+  .brand-icon-img--footer{height:52px;}
+  .brand-text-img--footer{height:37px;}
   .nav-links{display:flex;gap:34px;align-items:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;letter-spacing:.5px;text-transform:uppercase;}
   .nav-links a{position:relative;padding:6px 0;color:var(--navy);transition:color .15s;}
   .nav-links a::after{content:'';position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--red);transition:width .2s;}
@@ -396,7 +398,7 @@
   /* ---------- FOOTER ---------- */
   footer{background:var(--charcoal);color:rgba(255,255,255,.7);padding:54px 0 0;}
   .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:44px;border-bottom:1px solid rgba(255,255,255,.1);}
-  .footer-brand .brand-logo-img{filter:brightness(1.15);}
+  .footer-brand .brand-icon-img, .footer-brand .brand-text-img{filter:brightness(1.15);}
   .footer-brand p{margin-top:14px;font-size:14.5px;color:rgba(255,255,255,.55);max-width:280px;}
   footer h4{color:var(--white);font-size:14.5px;letter-spacing:1.5px;margin-bottom:16px;}
   footer ul{list-style:none;}
@@ -563,7 +565,8 @@
 <header class="nav" id="top">
   <div class="wrap">
     <a href="#top" class="brand">
-      <img src="img/logo-official.webp" alt="Amanda Construction" class="brand-logo-img">
+      <img src="img/logo-icon.webp" alt="" class="brand-icon-img" aria-hidden="true">
+      <img src="img/logo-text.webp" alt="Amanda Construction" class="brand-text-img">
     </a>
     <nav class="nav-links" id="navLinks">
       <a href="#home" onclick="closeMenu()">Home</a>
@@ -775,7 +778,8 @@
   <div class="wrap footer-grid">
     <div class="footer-brand">
       <a href="#top" class="brand">
-        <img src="img/logo-official.webp" alt="Amanda Construction" class="brand-logo-img brand-logo-img--footer">
+        <img src="img/logo-icon.webp" alt="" class="brand-icon-img brand-icon-img--footer" aria-hidden="true">
+        <img src="img/logo-text.webp" alt="Amanda Construction" class="brand-text-img brand-text-img--footer">
       </a>
       <p>Family-owned masonry and hardscape specialists serving Leominster, MA and Central Massachusetts since day one.</p>
     </div>
